@@ -57,11 +57,11 @@ const arithmeticFunctions = {
         registers["A"] = result & 0xFF;
         if (registers["A"] === 0) registers["F"] |= FLAGS.ZERO;
     },
-    SUB: (srcReg) => { registers["A"] -= registers[srcReg]; 
+    SUB: (srcReg) => { registers["A"] -= registers[srcReg];
     const result=registers["A"];
     UPDATE(result);
     },
-    MSUB: (address) => { registers["A"] -= memory[address]; 
+    MSUB: (address) => { registers["A"] -= memory[address];
     const result=registers["A"];
     UPDATE(result);
     },
@@ -152,4 +152,74 @@ const logicFunctions = {
     STC: () => {
         flags["CY"] = 1;
     },
+}
+
+const branchingFunction={
+    JMP:(Newaddress) => {address=Newaddress;},
+    JC:(Newaddress) => {if(flag["CY"]==1)address=Newaddress;},
+    JNC:(Newaddress) => {if(flag["CY"]==0)address=Newaddress;},
+    JP:(Newaddress) => {if(flag["S"]==0)address=Newaddress;},
+    JM:(Newaddress) => {if(flag["S"]==1)address=Newaddress;},
+    JZ:(Newaddress) => {if(flag["Z"]==1)address=Newaddress;},
+    JNZ:(Newaddress) => {if(flag["Z"]==0)address=Newaddress;},
+    JPE:(Newaddress)=>{if(flag["P"]==1)address=Newaddress;},
+    JPO:(Newaddress)=>{if(flag["P"]==0)address=Newaddress;},
+
+    CALL:(Newaddress) => {
+        stack.push(address);
+        address=Newaddress;
+    },
+    CC:(Newaddress)=>{if(flag["CY"]==1){
+        stack.push(address);
+        address=Newaddress;}
+    },
+    CNC:(Newaddress)=>{if(flag["CY"]==1){
+        stack.push(address);
+        address=Newaddress;}
+    },
+    CP:(Newaddress)=>{if(flag["S"]==0){
+        stack.push(address);
+        address=Newaddress;}
+    },
+    CM:(Newaddress)=>{if(flag["S"]==0){
+        stack.push(address);
+        address=Newaddress;}
+    },
+    CZ:(Newaddress)=>{if(flag["Z"]==1){
+        stack.push(address);
+        address=Newaddress;}
+    },
+    CNZ:(Newaddress)=>{if(flag["Z"]==0){
+        stack.push(address);
+        address=Newaddress;}
+    },
+    CPE:(Newaddress)=>{if(flag["P"]==1){
+        stack.push(address);
+        address=Newaddress;}
+    },
+    CPO:(Newaddress)=>{if(flag["P"]==0){
+        stack.push(address);
+        address=Newaddress;}
+    },
+
+    RET: () => {
+        address=stack.pop();
+    },
+    RC:(Newaddress)=>{if(flag["CY"]==1){address=Newaddress;}},
+    RNC:(Newaddress)=>{if(flag["CY"]==0){address=Newaddress;}},
+    RP:(Newaddress)=>{if(flag["S"]==0){address=Newaddress;}},
+    RM:(Newaddress)=>{if(flag["S"]==1){address=Newaddress;}},
+    RZ:(Newaddress)=>{if(flag["Z"]==1){address=Newaddress;}},
+    RNZ:(Newaddress)=>{if(flag["Z"]==0){address=Newaddress;}},
+    RPE:(Newaddress)=>{if(flag["P"]==1){address=Newaddress;}},
+    RPO:(Newaddress)=>{if(flag["P"]==0){address=Newaddress;}},
+
+    RST0:()=>{address=0;},
+    RST1:()=>{address=8;},
+    RST2:()=>{address=10;},
+    RST3:()=>{address=18;},
+    RST4:()=>{address=20;},
+    RST5:()=>{address=28;},
+    RST6:()=>{address=30;},
+    RST7:()=>{address=38;},
 }
